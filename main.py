@@ -25,8 +25,8 @@ mongo = PyMongo(app)
 @app.route('/add', methods=['POST'])
 def add_anime():
     """
-    La fonction add permet d'ajouter un élément a la liste
-    :return: retourne l'element ajouté avec un message de confirmation
+    La fonction add permet d'ajouter un element a la liste
+    :return: retourne l'element ajoute avec un message de confirmation
     """
     _json = request.json
     _name = _json['anime_title']
@@ -49,7 +49,7 @@ def add_anime():
 @app.route('/project', methods=['GET'])
 def animes():
     """
-    La fonction permet de récuperer la liste des éléments
+    La fonction permet de recuperer la liste des elements
     :return: Retourne et affiche la liste
     """
     animes = mongo.db.anime.find()
@@ -72,7 +72,7 @@ def delete_anime(id):
     """
     cette fonction permet de retirer un element de la liste
     :param id: defini un id
-    :return: retourne l'element supprimé
+    :return: retourne l'element supprime
     """
     mongo.db.anime.delete_one({'_id': ObjectId(id)})
     resp = jsonify("Anime deleted successfully")
@@ -86,7 +86,7 @@ def update_anime(id):
     """
     cette fonction permet de modifier un element de la liste
     :param id:permet de definir un id pour l'element
-    :return: retourne l'element modifié
+    :return: retourne l'element modifie
     """
     _id = id
     _json = request.json
@@ -107,6 +107,10 @@ def update_anime(id):
 
 @app.route('/add', methods=['POST'])
 def add_user():
+    """
+    La fonction add permet d'ajouter un element a la liste
+    :return: retourne l'element ajoute avec un message de confirmation
+    """
     _json = request.json
     _name = _json['name']
     _email = _json['email']
@@ -127,18 +131,32 @@ def add_user():
 
 @app.route('/project', methods=['GET'])
 def users():
+    """
+        La fonction permet de recuperer la liste des elements
+        :return: Retourne et affiche la liste
+        """
     users = mongo.db.users.find()
     resp = dumps(users)
     return resp
 
 @app.route('/project/<id>')
 def user(id):
+    """
+       permet de rechercher un element de la liste par rapport a son id
+       :param id: defini un id
+       :return: retourne et affiche l'element
+       """
     user = mongo.db.users.find_one({'_id':ObjectId(id)})
     resp = dumps(user)
     return resp
 
 @app.route('/delete/<id>', methods=['DELETE'])
 def delete_user(id):
+    """
+       cette fonction permet de retirer un element de la liste
+       :param id: defini un id
+       :return: retourne l'element supprime
+       """
     mongo.db.users.delete_one({'_id': ObjectId(id)})
     resp = jsonify("User deleted successfully")
 
@@ -148,6 +166,11 @@ def delete_user(id):
 
 @app.route('/update/<id>', methods=['PUT'])
 def update_user(id):
+    """
+        cette fonction permet de modifier un element de la liste
+        :param id:permet de definir un id pour l'element
+        :return: retourne l'element modifie
+        """  
     _id = id
     _json = request.json
     _name = _json['name']
