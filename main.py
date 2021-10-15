@@ -10,10 +10,13 @@ from pymongo import MongoClient
 import random
 
 
+
+
+
+
 app = Flask(__name__)
 
 app.secret_key = "secret_key"
-
 
 app.config['MONGO_URI'] = "mongodb+srv://admin:admin@animeproject.no3y7.mongodb.net/AnimeProject?retryWrites=true&w=majority"
 
@@ -94,6 +97,66 @@ def update_anime(id):
         mongo.db.anime.update_one({'_id': ObjectId(_id['$oid']) if '$oid' in _id else ObjectId(_id)}, {'$set': {'anime_title': _name, 'anime_num_episodes': _episodes}})
 
         resp = jsonify("Anime updated successfully")
+
+        resp.status_code = 200
+
+        return resp
+    else:
+        return not_found()
+
+
+@app.route('/add', methods=['POST'])
+def add_user():
+    _json = request.json
+    _name = _json['name']
+    _email = _json['email']
+
+    if _name and _email and request.method == 'POST':
+
+        id = mongo.db.users.insert_one({'name': _name, 'email': _email})
+
+        resp = jsonify("User added successfully")
+
+        resp.status_code = 200
+
+        return resp
+
+    else:
+        return not_found()
+
+
+@app.route('/project', methods=['GET'])
+def users():
+    users = mongo.db.users.find()
+    resp = dumps(users)
+    return resp
+
+@app.route('/project/<id>')
+def user(id):
+    user = mongo.db.users.find_one({'_id':ObjectId(id)})
+    resp = dumps(user)
+    return resp
+
+@app.route('/delete/<id>', methods=['DELETE'])
+def delete_user(id):
+    mongo.db.users.delete_one({'_id': ObjectId(id)})
+    resp = jsonify("User deleted successfully")
+
+    resp.status_code = 200
+
+    return resp
+
+@app.route('/update/<id>', methods=['PUT'])
+def update_user(id):
+    _id = id
+    _json = request.json
+    _name = _json['name']
+    _email = _json['email']
+
+    if _name and _email and _id and request.method == 'PUT':
+        mongo.db.anime.update_one({'_id': ObjectId(_id['$oid']) if '$oid' in _id else ObjectId(_id)}, {'$set': {'name': _name, 'email': _email}})
+
+        resp = jsonify("User updated successfully")
 
         resp.status_code = 200
 
